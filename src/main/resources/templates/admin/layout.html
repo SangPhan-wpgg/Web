@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org" th:fragment="layout(title, content)">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${title ?: 'Admin Panel'}">Admin Panel</title>
+    
+    <!-- CSRF Meta Tags -->
+    <meta name="_csrf" th:content="${_csrf.token}"/>
+    <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Custom Admin CSS -->
+    <link th:href="@{/css/admin-modern.css}" rel="stylesheet">
+    <!-- Modal Fix CSS -->
+    <link th:href="@{/css/modal-fix.css}" rel="stylesheet">
+    
+    <!-- Debug CSS -->
+    <style>
+        /* Debug styles to ensure CSS is loading */
+        body {
+            background-color: #f8fafc !important;
+        }
+        .sidebar {
+            background: linear-gradient(180deg, #1e293b 0%, #334155 100%) !important;
+        }
+    </style>
+</head>
+<body>
+        <!-- Sidebar -->
+        <div class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <div class="sidebar-logo">
+                    <i class="bi bi-shield-check"></i>
+                </div>
+                <div class="sidebar-title">Admin Panel</div>
+            </div>
+            
+            <nav class="sidebar-nav">
+                <!-- Dashboard -->
+                <div class="nav-section">
+                    <div class="nav-section-title">Trang chủ</div>
+                    <div class="nav-item">
+                        <a th:href="@{/admin}" class="nav-link" th:classappend="${#strings.contains(currentPath, '/admin') and not #strings.contains(currentPath, '/admin/')} ? 'active' : ''">
+                            <div class="nav-icon">
+                                <i class="bi bi-speedometer2"></i>
+                            </div>
+                            <span class="nav-text">Dashboard</span>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Content Management -->
+                <div class="nav-section">
+                    <div class="nav-section-title">Quản lý nội dung</div>
+                    <div class="nav-item">
+                        <a th:href="@{/admin/categories}" class="nav-link" th:classappend="${#strings.contains(currentPath, '/admin/categories')} ? 'active' : ''">
+                            <div class="nav-icon">
+                                <i class="bi bi-tags"></i>
+                            </div>
+                            <span class="nav-text">Danh mục</span>
+                        </a>
+                    </div>
+                    <div class="nav-item">
+                        <a th:href="@{/admin/videos}" class="nav-link" th:classappend="${#strings.contains(currentPath, '/admin/videos')} ? 'active' : ''">
+                            <div class="nav-icon">
+                                <i class="bi bi-collection-play"></i>
+                            </div>
+                            <span class="nav-text">Video</span>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- User Management -->
+                <div class="nav-section">
+                    <div class="nav-section-title">Quản lý người dùng</div>
+                    <div class="nav-item">
+                        <a th:href="@{/admin/users}" class="nav-link" th:classappend="${#strings.contains(currentPath, '/admin/users')} ? 'active' : ''">
+                            <div class="nav-icon">
+                                <i class="bi bi-people"></i>
+                            </div>
+                            <span class="nav-text">Người dùng</span>
+                        </a>
+                    </div>
+                    <div class="nav-item">
+                        <a th:href="@{/admin/users/roles}" class="nav-link" th:classappend="${#strings.contains(currentPath, '/admin/users/roles')} ? 'active' : ''">
+                            <div class="nav-icon">
+                                <i class="bi bi-shield"></i>
+                            </div>
+                            <span class="nav-text">Phân quyền</span>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Reports & Analytics -->
+                <div class="nav-section">
+                    <div class="nav-section-title">Báo cáo & Thống kê</div>
+                    <div class="nav-item">
+                        <a th:href="@{/admin/reports}" class="nav-link" th:classappend="${#strings.contains(currentPath, '/admin/reports')} ? 'active' : ''">
+                            <div class="nav-icon">
+                                <i class="bi bi-bar-chart"></i>
+                            </div>
+                            <span class="nav-text">Báo cáo</span>
+                        </a>
+                    </div>
+                    <div class="nav-item">
+                        <a th:href="@{/admin/analytics}" class="nav-link" th:classappend="${#strings.contains(currentPath, '/admin/analytics')} ? 'active' : ''">
+                            <div class="nav-icon">
+                                <i class="bi bi-pie-chart"></i>
+                            </div>
+                            <span class="nav-text">Phân tích</span>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- System -->
+                <div class="nav-section">
+                    <div class="nav-section-title">Hệ thống</div>
+                    <div class="nav-item">
+                        <a th:href="@{/admin/settings}" class="nav-link" th:classappend="${#strings.contains(currentPath, '/admin/settings')} ? 'active' : ''">
+                            <div class="nav-icon">
+                                <i class="bi bi-gear"></i>
+                            </div>
+                            <span class="nav-text">Cài đặt</span>
+                        </a>
+                    </div>
+                    <div class="nav-item">
+                        <a th:href="@{/admin/logs}" class="nav-link" th:classappend="${#strings.contains(currentPath, '/admin/logs')} ? 'active' : ''">
+                            <div class="nav-icon">
+                                <i class="bi bi-journal-text"></i>
+                            </div>
+                            <span class="nav-text">Nhật ký</span>
+                        </a>
+                    </div>
+                </div>
+            </nav>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content" id="mainContent">
+            <!-- Header -->
+            <header class="header">
+                <div class="header-left">
+                    <button class="sidebar-toggle" id="sidebarToggle">
+                        <i class="bi bi-list"></i>
+                    </button>
+                    <nav aria-label="breadcrumb">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item">
+                                <a th:href="@{/admin}">
+                                    <i class="bi bi-house-door me-1"></i>Admin
+                                </a>
+                            </li>
+                            <li class="breadcrumb-item active" th:text="${pageTitle}">Dashboard</li>
+                        </ol>
+                    </nav>
+                </div>
+
+                <div class="user-menu">
+                    <div class="dropdown">
+                        <a class="nav-link dropdown-toggle d-flex align-items-center text-decoration-none" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <!-- User Avatar -->
+                            <div class="user-avatar me-2">
+                                <div class="avatar-placeholder rounded-circle d-flex align-items-center justify-content-center" 
+                                     style="width: 32px; height: 32px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; font-size: 14px; font-weight: bold;">
+                                    <span th:text="${user != null ? #strings.substring(user.fullName, 0, 1).toUpperCase() : 'A'}">A</span>
+                                </div>
+                            </div>
+                            <div class="user-info">
+                                <div class="user-name" th:text="${user != null ? user.fullName : 'Admin'}">Admin</div>
+                                <div class="user-role" th:text="${user != null ? user.role.roleName : 'ADMIN'}">ADMIN</div>
+                            </div>
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+                            <li>
+                                <h6 class="dropdown-header">
+                                    <i class="bi bi-person-circle me-2"></i>Tài khoản
+                                </h6>
+                            </li>
+                            <li><a class="dropdown-item" th:href="@{/admin/profile}">
+                                <i class="bi bi-person me-2"></i>Hồ sơ cá nhân
+                            </a></li>
+                            <li><a class="dropdown-item" th:href="@{/profile}">
+                                <i class="bi bi-person-gear me-2"></i>Cài đặt tài khoản
+                            </a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li>
+                                <h6 class="dropdown-header">
+                                    <i class="bi bi-gear me-2"></i>Quản trị
+                                </h6>
+                            </li>
+                            <li><a class="dropdown-item" th:href="@{/admin/settings}">
+                                <i class="bi bi-sliders me-2"></i>Cài đặt hệ thống
+                            </a></li>
+                            <li><a class="dropdown-item" th:href="@{/admin/logs}">
+                                <i class="bi bi-journal-text me-2"></i>Nhật ký hệ thống
+                            </a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" th:href="@{/}">
+                                <i class="bi bi-house me-2"></i>Xem trang web
+                            </a></li>
+                            <li><a class="dropdown-item text-danger" th:href="@{/logout}">
+                                <i class="bi bi-box-arrow-right me-2"></i>Đăng xuất
+                            </a></li>
+                        </ul>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Content Area -->
+            <div class="content-area">
+                <!-- Flash Messages -->
+                <div th:if="${success}" class="alert alert-success alert-dismissible fade show" role="alert">
+                    <i class="bi bi-check-circle me-2"></i>
+                    <span th:text="${success}"></span>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+                
+                <div th:if="${error}" class="alert alert-danger alert-dismissible fade show" role="alert">
+                    <i class="bi bi-exclamation-triangle me-2"></i>
+                    <span th:text="${error}"></span>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+
+                <!-- Page Content -->
+                <div th:replace="${content}">
+                    <!-- Content will be injected here -->
+                </div>
+            </div>
+        </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const sidebar = document.getElementById('sidebar');
+            const mainContent = document.getElementById('mainContent');
+            const sidebarToggle = document.getElementById('sidebarToggle');
+            let isCollapsed = false;
+
+            // Sidebar toggle functionality
+            sidebarToggle.addEventListener('click', function() {
+                isCollapsed = !isCollapsed;
+                
+                if (isCollapsed) {
+                    sidebar.classList.add('collapsed');
+                    mainContent.classList.add('expanded');
+                } else {
+                    sidebar.classList.remove('collapsed');
+                    mainContent.classList.remove('expanded');
+                }
+            });
+
+            // Mobile sidebar toggle
+            function toggleMobileSidebar() {
+                if (window.innerWidth <= 768) {
+                    sidebar.classList.toggle('show');
+                }
+            }
+
+            // Auto-hide alerts
+            const alerts = document.querySelectorAll('.alert');
+            alerts.forEach(function(alert) {
+                setTimeout(function() {
+                    const bsAlert = new bootstrap.Alert(alert);
+                    bsAlert.close();
+                }, 5000);
+            });
+
+            // Handle window resize
+            window.addEventListener('resize', function() {
+                if (window.innerWidth > 768) {
+                    sidebar.classList.remove('show');
+                }
+            });
+
+            // Add click outside to close mobile sidebar
+            document.addEventListener('click', function(e) {
+                if (window.innerWidth <= 768 && 
+                    !sidebar.contains(e.target) && 
+                    !sidebarToggle.contains(e.target)) {
+                    sidebar.classList.remove('show');
+                }
+            });
+        });
+    </script>
+</body>
+</html>

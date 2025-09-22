@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org" th:replace="~{layouts/layout :: layout(~{::title}, ~{::content})}">
+<head>
+    <title>Đăng nhập - Video Platform</title>
+</head>
+<body>
+    <div th:fragment="content">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-md-6 col-lg-5">
+                    <div class="form-container fade-in">
+                        <h2>
+                            <i class="bi bi-box-arrow-in-right me-2"></i>
+                            Đăng nhập
+                        </h2>
+                        
+                        <form th:action="@{/login}" method="post" class="needs-validation" novalidate>
+                            <div class="form-floating mb-3">
+                                <input type="text" 
+                                       class="form-control" 
+                                       id="userName" 
+                                       name="userName" 
+                                       placeholder="Tên đăng nhập hoặc Email"
+                                       th:value="${userName}"
+                                       required>
+                                <label for="userName">
+                                    <i class="bi bi-person me-2"></i>
+                                    Tên đăng nhập hoặc Email
+                                </label>
+                                <div class="invalid-feedback">
+                                    Vui lòng nhập tên đăng nhập hoặc email
+                                </div>
+                            </div>
+
+                            <div class="form-floating mb-3">
+                                <input type="password" 
+                                       class="form-control" 
+                                       id="password" 
+                                       name="password" 
+                                       placeholder="Mật khẩu"
+                                       required>
+                                <label for="password">
+                                    <i class="bi bi-lock me-2"></i>
+                                    Mật khẩu
+                                </label>
+                                <div class="invalid-feedback">
+                                    Vui lòng nhập mật khẩu
+                                </div>
+                                <div class="position-relative">
+                                    <button type="button" 
+                                            class="btn btn-link position-absolute end-0 top-50 translate-middle-y pe-3" 
+                                            onclick="togglePassword('password')"
+                                            style="z-index: 10; border: none; background: none;">
+                                        <i class="bi bi-eye text-muted"></i>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div class="form-check mb-3">
+                                <input class="form-check-input" 
+                                       type="checkbox" 
+                                       id="rememberMe" 
+                                       name="remember-me">
+                                <label class="form-check-label" for="rememberMe">
+                                    Ghi nhớ đăng nhập
+                                </label>
+                            </div>
+
+                            <div class="d-grid mb-3">
+                                <button type="submit" class="btn btn-primary btn-lg">
+                                    <i class="bi bi-box-arrow-in-right me-2"></i>
+                                    Đăng nhập
+                                </button>
+                            </div>
+
+                            <div class="text-center">
+                                <p class="mb-2">
+                                    <a href="#" class="text-decoration-none">
+                                        <i class="bi bi-question-circle me-1"></i>
+                                        Quên mật khẩu?
+                                    </a>
+                                </p>
+                                <p class="mb-0">
+                                    Chưa có tài khoản? 
+                                    <a th:href="@{/register}" class="text-decoration-none fw-bold">
+                                        Đăng ký ngay
+                                    </a>
+                                </p>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

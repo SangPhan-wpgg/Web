@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org" th:replace="~{admin/layout :: layout(~{::title}, ~{::content})}">
+<head>
+    <title>Admin Dashboard</title>
+</head>
+<body>
+    <div th:fragment="content">
+        <!-- Welcome Section -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="admin-card">
+                    <div class="admin-card-body">
+                        <div class="row align-items-center">
+                            <div class="col-md-8">
+                                <h2 class="mb-2">
+                                    <i class="bi bi-house-door me-2"></i>
+                                    Chào mừng trở lại, <span th:text="${user != null ? user.fullName : 'Admin'}">Admin</span>!
+                                </h2>
+                                <p class="text-muted mb-0">Đây là tổng quan về hệ thống quản trị của bạn</p>
+                            </div>
+                            <div class="col-md-4 text-end">
+                                <div class="text-muted">
+                                    <i class="bi bi-calendar3 me-1"></i>
+                                    <span th:text="${#dates.format(#dates.createNow(), 'dd/MM/yyyy')}">Hôm nay</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Statistics Cards -->
+        <div class="row mb-4">
+            <div class="col-xl-3 col-md-6 mb-4">
+                <div class="stats-card">
+                    <div class="stats-icon primary">
+                        <i class="bi bi-people"></i>
+                    </div>
+                    <div class="stats-number" th:text="${totalUsers ?: '150'}">150</div>
+                    <div class="stats-label">Tổng người dùng</div>
+                    <div class="mt-2">
+                        <small class="text-success">
+                            <i class="bi bi-arrow-up me-1"></i>+12% so với tháng trước
+                        </small>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-xl-3 col-md-6 mb-4">
+                <div class="stats-card">
+                    <div class="stats-icon success">
+                        <i class="bi bi-tags"></i>
+                    </div>
+                    <div class="stats-number" th:text="${totalCategories ?: '25'}">25</div>
+                    <div class="stats-label">Danh mục</div>
+                    <div class="mt-2">
+                        <small class="text-success">
+                            <i class="bi bi-arrow-up me-1"></i>+3 danh mục mới
+                        </small>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-xl-3 col-md-6 mb-4">
+                <div class="stats-card">
+                    <div class="stats-icon warning">
+                        <i class="bi bi-collection-play"></i>
+                    </div>
+                    <div class="stats-number" th:text="${totalVideos ?: '1,250'}">1,250</div>
+                    <div class="stats-label">Tổng video</div>
+                    <div class="mt-2">
+                        <small class="text-success">
+                            <i class="bi bi-arrow-up me-1"></i>+45 video mới
+                        </small>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-xl-3 col-md-6 mb-4">
+                <div class="stats-card">
+                    <div class="stats-icon info">
+                        <i class="bi bi-eye"></i>
+                    </div>
+                    <div class="stats-number" th:text="${totalViews ?: '5,890'}">5,890</div>
+                    <div class="stats-label">Lượt xem</div>
+                    <div class="mt-2">
+                        <small class="text-success">
+                            <i class="bi bi-arrow-up me-1"></i>+8% so với tuần trước
+                        </small>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="admin-card">
+                    <div class="admin-card-header">
+                        <h5 class="mb-0">
+                            <i class="bi bi-lightning me-2"></i>
+                            Thao tác nhanh
+                        </h5>
+                    </div>
+                    <div class="admin-card-body">
+                        <div class="row">
+                            <div class="col-md-3 mb-3">
+                                <a th:href="@{/admin/categories/add}" class="btn btn-admin btn-admin-primary w-100">
+                                    <i class="bi bi-plus-circle me-2"></i>
+                                    Thêm danh mục
+                                </a>
+                            </div>
+                            <div class="col-md-3 mb-3">
+                                <a th:href="@{/admin/users}" class="btn btn-admin btn-admin-success w-100">
+                                    <i class="bi bi-people me-2"></i>
+                                    Quản lý người dùng
+                                </a>
+                            </div>
+                            <div class="col-md-3 mb-3">
+                                <a th:href="@{/admin/videos}" class="btn btn-admin btn-admin-primary w-100">
+                                    <i class="bi bi-collection-play me-2"></i>
+                                    Quản lý video
+                                </a>
+                            </div>
+                            <div class="col-md-3 mb-3">
+                                <a th:href="@{/admin/settings}" class="btn btn-admin btn-admin-success w-100">
+                                    <i class="bi bi-gear me-2"></i>
+                                    Cài đặt hệ thống
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Recent Activity & System Status -->
+        <div class="row">
+            <div class="col-lg-8">
+                <div class="admin-card">
+                    <div class="admin-card-header">
+                        <h5 class="mb-0">
+                            <i class="bi bi-clock-history me-2"></i>
+                            Hoạt động gần đây
+                        </h5>
+                    </div>
+                    <div class="admin-card-body">
+                        <div class="list-group list-group-flush">
+                            <div class="list-group-item d-flex justify-content-between align-items-center border-0 px-0">
+                                <div class="d-flex align-items-center">
+                                    <div class="bg-success rounded-circle p-2 me-3">
+                                        <i class="bi bi-person-plus text-white"></i>
+                                    </div>
+                                    <div>
+                                        <h6 class="mb-1">Người dùng mới đăng ký</h6>
+                                        <small class="text-muted">john_doe@example.com</small>
+                                    </div>
+                                </div>
+                                <small class="text-muted">2 giờ trước</small>
+                            </div>
+                            <div class="list-group-item d-flex justify-content-between align-items-center border-0 px-0">
+                                <div class="d-flex align-items-center">
+                                    <div class="bg-primary rounded-circle p-2 me-3">
+                                        <i class="bi bi-tag text-white"></i>
+                                    </div>
+                                    <div>
+                                        <h6 class="mb-1">Cập nhật danh mục</h6>
+                                        <small class="text-muted">Công nghệ</small>
+                                    </div>
+                                </div>
+                                <small class="text-muted">4 giờ trước</small>
+                            </div>
+                            <div class="list-group-item d-flex justify-content-between align-items-center border-0 px-0">
+                                <div class="d-flex align-items-center">
+                                    <div class="bg-info rounded-circle p-2 me-3">
+                                        <i class="bi bi-play-circle text-white"></i>
+                                    </div>
+                                    <div>
+                                        <h6 class="mb-1">Video mới được tải lên</h6>
+                                        <small class="text-muted">Giới thiệu Spring Boot</small>
+                                    </div>
+                                </div>
+                                <small class="text-muted">6 giờ trước</small>
+                            </div>
+                            <div class="list-group-item d-flex justify-content-between align-items-center border-0 px-0">
+                                <div class="d-flex align-items-center">
+                                    <div class="bg-warning rounded-circle p-2 me-3">
+                                        <i class="bi bi-eye text-white"></i>
+                                    </div>
+                                    <div>
+                                        <h6 class="mb-1">Video đạt 1000 lượt xem</h6>
+                                        <small class="text-muted">Java Cơ bản</small>
+                                    </div>
+                                </div>
+                                <small class="text-muted">8 giờ trước</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-lg-4">
+                <div class="admin-card">
+                    <div class="admin-card-header">
+                        <h5 class="mb-0">
+                            <i class="bi bi-activity me-2"></i>
+                            Trạng thái hệ thống
+                        </h5>
+                    </div>
+                    <div class="admin-card-body">
+                        <div class="mb-3">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <span class="fw-semibold">Máy chủ</span>
+                                <span class="badge bg-success">Online</span>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <span class="fw-semibold">Cơ sở dữ liệu</span>
+                                <span class="badge bg-success">Kết nối</span>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <span class="fw-semibold">Lưu trữ</span>
+                                <span class="badge bg-warning">75% sử dụng</span>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <span class="fw-semibold">Bộ nhớ</span>
+                                <span class="badge bg-info">2.1GB / 4GB</span>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <span class="fw-semibold">CPU</span>
+                                <span class="badge bg-primary">45% sử dụng</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

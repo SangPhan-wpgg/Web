@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org" th:replace="~{admin/layout :: layout(~{::title}, ~{::content})}">
+<head>
+    <title th:text="${video.title} + ' - Video Details'">Video Details</title>
+</head>
+<body>
+    <div th:fragment="content">
+        <!-- Page Header -->
+        <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center mb-4">
+            <h1 class="h2">
+                <i class="bi bi-play-circle me-2"></i>
+                <span th:text="${video.title}">Video Title</span>
+            </h1>
+            <div class="btn-toolbar mb-2 mb-md-0">
+                <div class="btn-group me-2">
+                    <a th:href="@{/admin/videos/play/{id}(id=${video.id})}" class="btn btn-admin btn-admin-primary">
+                        <i class="bi bi-play-circle me-1"></i>Play Video
+                    </a>
+                    <a th:href="@{/admin/videos/edit/{id}(id=${video.id})}" class="btn btn-admin btn-admin-secondary">
+                        <i class="bi bi-pencil me-1"></i>Edit Video
+                    </a>
+                    <a th:href="@{/admin/videos/}" class="btn btn-outline-secondary">
+                        <i class="bi bi-arrow-left me-1"></i>Back to List
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <!-- Video Details -->
+            <div class="col-lg-8">
+                <div class="admin-card">
+                    <div class="admin-card-header">
+                        <h5 class="mb-0">
+                            <i class="bi bi-info-circle me-2"></i>Video Details
+                        </h5>
+                    </div>
+                    <div class="admin-card-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="form-label fw-semibold">Video ID:</label>
+                                    <p class="mb-0" th:text="${video.id}">1</p>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label fw-semibold">Title:</label>
+                                    <p class="mb-0" th:text="${video.title}">Video Title</p>
+                                </div>
+                                <div class="mb-3" th:if="${video.description != null and !video.description.isEmpty()}">
+                                    <label class="form-label fw-semibold">Description:</label>
+                                    <p class="mb-0" th:text="${video.description}">Video Description</p>
+                                </div>
+                                <div class="mb-3" th:if="${video.videoCode != null and !video.videoCode.isEmpty()}">
+                                    <label class="form-label fw-semibold">Video Code:</label>
+                                    <p class="mb-0" th:text="${video.videoCode}">Video Code</p>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3" th:if="${video.category != null}">
+                                    <label class="form-label fw-semibold">Category:</label>
+                                    <p class="mb-0">
+                                        <span class="badge bg-secondary" th:text="${video.category.categoryName}">Category</span>
+                                    </p>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label fw-semibold">Views:</label>
+                                    <p class="mb-0">
+                                        <span class="badge bg-info" th:text="${video.views}">0</span>
+                                    </p>
+                                </div>
+                                <div class="mb-3" th:if="${video.duration > 0}">
+                                    <label class="form-label fw-semibold">Duration:</label>
+                                    <p class="mb-0" th:text="${video.duration} + ' seconds'">0 seconds</p>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label fw-semibold">Status:</label>
+                                    <p class="mb-0">
+                                        <span th:if="${video.active}" class="badge bg-success">Active</span>
+                                        <span th:unless="${video.active}" class="badge bg-danger">Inactive</span>
+                                    </p>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label fw-semibold">Created Date:</label>
+                                    <p class="mb-0" th:text="${#dates.format(video.createdDate, 'dd/MM/yyyy HH:mm')}">01/01/2024 00:00</p>
+                                </div>
+                                <div class="mb-3" th:if="${video.user != null}">
+                                    <label class="form-label fw-semibold">Uploaded by:</label>
+                                    <p class="mb-0" th:text="${video.user.fullName}">User Name</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Video File Information -->
+                <div class="admin-card" th:if="${video.videoFile != null and !video.videoFile.isEmpty()}">
+                    <div class="admin-card-header">
+                        <h5 class="mb-0">
+                            <i class="bi bi-file-earmark-play me-2"></i>Video File
+                        </h5>
+                    </div>
+                    <div class="admin-card-body">
+                        <div class="d-flex align-items-center">
+                            <i class="bi bi-file-earmark-play text-primary me-3" style="font-size: 2rem;"></i>
+                            <div>
+                                <h6 class="mb-1" th:text="${video.videoFile}">video_file.mp4</h6>
+                                <small class="text-muted">Video file uploaded</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Sidebar -->
+            <div class="col-lg-4">
+                <!-- Poster Image -->
+                <div class="admin-card mb-4" th:if="${video.poster != null and !video.poster.isEmpty()}">
+                    <div class="admin-card-header">
+                        <h5 class="mb-0">
+                            <i class="bi bi-image me-2"></i>Poster
+                        </h5>
+                    </div>
+                    <div class="admin-card-body text-center">
+                        <img th:src="${video.poster.startsWith('images/') ? '/' + video.poster : '/images/' + video.poster}" 
+                             class="img-fluid rounded" 
+                             style="max-height: 200px; object-fit: cover;">
+                    </div>
+                </div>
+                
+                <!-- Quick Actions -->
+                <div class="admin-card">
+                    <div class="admin-card-header">
+                        <h5 class="mb-0">
+                            <i class="bi bi-lightning me-2"></i>Quick Actions
+                        </h5>
+                    </div>
+                    <div class="admin-card-body">
+                        <div class="d-grid gap-2">
+                            <a th:href="@{/admin/videos/play/{id}(id=${video.id})}" class="btn btn-admin btn-admin-primary">
+                                <i class="bi bi-play-circle me-2"></i>Play Video
+                            </a>
+                            <a th:href="@{/admin/videos/edit/{id}(id=${video.id})}" class="btn btn-admin btn-admin-secondary">
+                                <i class="bi bi-pencil me-2"></i>Edit Video
+                            </a>
+                            <button type="button" 
+                                    class="btn btn-admin btn-admin-danger"
+                                    data-bs-toggle="modal" 
+                                    data-bs-target="#deleteModal">
+                                <i class="bi bi-trash me-2"></i>Delete Video
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Delete Confirmation Modal -->
+        <div class="modal fade" id="deleteModal" tabindex="-1">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Confirm Delete</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        <p>Are you sure you want to delete the video <strong th:text="${video.title}">Video Title</strong>?</p>
+                        <p class="text-muted">This action cannot be undone.</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <a th:href="@{/admin/videos/delete/{id}(id=${video.id})}" 
+                           class="btn btn-admin btn-admin-danger">Delete</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

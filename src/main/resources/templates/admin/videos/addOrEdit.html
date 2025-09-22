@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org" th:replace="~{admin/layout :: layout(~{::title}, ~{::content})}">
+<head>
+    <title th:text="${video.id != null} ? 'Edit Video - Admin' : 'Add Video - Admin'">Add Video - Admin</title>
+</head>
+<body>
+    <div th:fragment="content">
+        <!-- Flash Messages -->
+        <div th:if="${success}" class="alert alert-success alert-dismissible fade show" role="alert">
+            <i class="bi bi-check-circle me-2"></i>
+            <span th:text="${success}"></span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+        
+        <div th:if="${error}" class="alert alert-danger alert-dismissible fade show" role="alert">
+            <i class="bi bi-exclamation-triangle me-2"></i>
+            <span th:text="${error}"></span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+
+        <!-- Page Header -->
+        <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+            <h1 class="h2">
+                <i class="bi bi-play-circle me-2"></i>
+                <span th:text="${video.id != null} ? 'Edit Video' : 'Add Video'">Add Video</span>
+            </h1>
+            <div class="btn-toolbar mb-2 mb-md-0">
+                <a th:href="@{/admin/videos/}" class="btn btn-admin btn-outline-secondary">
+                    <i class="bi bi-arrow-left me-2"></i>Back to Videos
+                </a>
+            </div>
+        </div>
+
+        <div class="row">
+            <!-- Video Form -->
+            <div class="col-lg-8">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">
+                            <i class="bi bi-form me-2"></i>Video Information
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <form th:action="@{/admin/videos/saveOrUpdate}" method="post" enctype="multipart/form-data" class="needs-validation" novalidate>
+                            <!-- CSRF Token -->
+                            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+                            <!-- Hidden field for video ID -->
+                            <input type="hidden" name="id" th:value="${video.id}">
+                            
+                            <div class="row">
+                                <div class="col-md-12 mb-3">
+                                    <label for="title" class="form-label">Video Title <span class="text-danger">*</span></label>
+                                    <input type="text" class="form-control" id="title" name="title" th:value="${video.title}" 
+                                           placeholder="Enter video title" required>
+                                    <div class="invalid-feedback">
+                                        Please provide a valid video title.
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="row">
+                                <div class="col-md-12 mb-3">
+                                    <label for="description" class="form-label">Description</label>
+                                    <textarea class="form-control" id="description" name="description" th:text="${video.description}" 
+                                              rows="4" placeholder="Enter video description"></textarea>
+                                    <div class="form-text">Optional: Provide a brief description of this video.</div>
+                                </div>
+                            </div>
+                            
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="category" class="form-label">Category</label>
+                                    <select class="form-select" id="category" name="category">
+                                        <option value="">Select a category</option>
+                                        <option th:each="cat : ${categories}" 
+                                                th:value="${cat.id}" 
+                                                th:selected="${video.category != null and video.category.id == cat.id}"
+                                                th:text="${cat.categoryName}">Category</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="videoCode" class="form-label">Video Code</label>
+                                    <input type="text" class="form-control" id="videoCode" name="videoCode" th:value="${video.videoCode}" 
+                                           placeholder="Enter video code (optional)">
+                                    <div class="form-text">Optional: External video code (e.g., YouTube ID).</div>
+                                </div>
+                            </div>
+                            
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="videoFile" class="form-label">Video File <span class="text-danger">*</span></label>
+                                    <input type="file" class="form-control" id="videoFile" name="videoFile" 
+                                           accept="video/*" onchange="previewVideo(this)">
+                                    <div class="form-text">Upload a video file (MP4, AVI, MOV, etc.).</div>
+                                    
+                                    <!-- Preview current video -->
+                                    <div th:if="${video.videoFile != null and !video.videoFile.isEmpty()}" class="mt-2">
+                                        <label class="form-label">Current Video:</label>
+                                        <div class="d-flex align-items-center">
+                                            <video th:src="@{'/video-files/' + ${video.videoFile}}" 
+                                                   controls style="width: 200px; height: 120px;" class="me-3">
+                                                Your browser does not support the video tag.
+                                            </video>
+                                            <div>
+                                                <small class="text-muted">Current video will be replaced if you upload a new one.</small>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Preview new video -->
+                                    <div id="videoPreview" class="mt-2" style="display: none;">
+                                        <label class="form-label">New Video Preview:</label>
+                                        <div class="d-flex align-items-center">
+                                            <video id="previewVideo" controls style="width: 200px; height: 120px;" class="me-3">
+                                                Your browser does not support the video tag.
+                                            </video>
+                                            <div>
+                                                <small class="text-success">This will be the new video.</small>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="col-md-6 mb-3">
+                                    <label for="posterFile" class="form-label">Poster Image</label>
+                                    <input type="file" class="form-control" id="posterFile" name="posterFile" 
+                                           accept="image/*" onchange="previewPoster(this)">
+                                    <div class="form-text">Upload a poster image (JPG, PNG, GIF).</div>
+                                    
+                                    <!-- Preview current poster -->
+                                    <div th:if="${video.poster != null and !video.poster.isEmpty()}" class="mt-2">
+                                        <label class="form-label">Current Poster:</label>
+                                        <div class="d-flex align-items-center">
+                                            <img th:src="${video.poster.startsWith('images/') ? '/' + video.poster : '/images/' + video.poster}" 
+                                                 class="img-thumbnail me-3" style="width: 80px; height: 60px; object-fit: cover;">
+                                            <div>
+                                                <small class="text-muted">Current poster will be replaced if you upload a new one.</small>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Preview new poster -->
+                                    <div id="posterPreview" class="mt-2" style="display: none;">
+                                        <label class="form-label">New Poster Preview:</label>
+                                        <div class="d-flex align-items-center">
+                                            <img id="previewPoster" class="img-thumbnail me-3" style="width: 80px; height: 60px; object-fit: cover;">
+                                            <div>
+                                                <small class="text-success">This will be the new poster.</small>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="duration" class="form-label">Duration (seconds)</label>
+                                    <input type="number" class="form-control" id="duration" name="duration" th:value="${video.duration}" 
+                                           placeholder="Enter duration in seconds" min="0">
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <div class="form-check mt-4">
+                                        <input class="form-check-input" type="checkbox" id="active" name="active" th:checked="${video.active}">
+                                        <label class="form-check-label" for="active">
+                                            Active
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="row">
+                                <div class="col-12">
+                                    <hr>
+                                    <div class="d-flex justify-content-end gap-2">
+                                        <a th:href="@{/admin/videos/}" class="btn btn-admin btn-outline-secondary">
+                                            <i class="bi bi-x-circle me-2"></i>Cancel
+                                        </a>
+                                        <button type="submit" class="btn btn-admin btn-admin-primary">
+                                            <i class="bi bi-check-circle me-2"></i>
+                                            <span th:text="${video.id != null} ? 'Update Video' : 'Create Video'">Create Video</span>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Statistics -->
+            <div class="col-lg-4">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">
+                            <i class="bi bi-bar-chart me-2"></i>Statistics
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row text-center">
+                            <div class="col-6">
+                                <div class="h4 text-primary" th:text="${video.id != null ? '0' : '0'}">0</div>
+                                <small class="text-muted">Views</small>
+                            </div>
+                            <div class="col-6">
+                                <div class="h4 text-success" th:text="${video.id != null ? '0' : '0'}">0</div>
+                                <small class="text-muted">Likes</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        (function() {
+            'use strict';
+            window.addEventListener('load', function() {
+                var forms = document.getElementsByClassName('needs-validation');
+                var validation = Array.prototype.filter.call(forms, function(form) {
+                    form.addEventListener('submit', function(event) {
+                        if (form.checkValidity() === false) {
+                            event.preventDefault();
+                            event.stopPropagation();
+                        }
+                        form.classList.add('was-validated');
+                    }, false);
+                });
+            }, false);
+        })();
+        
+        function previewVideo(input) {
+            if (input.files && input.files[0]) {
+                const file = input.files[0];
+                const url = URL.createObjectURL(file);
+                document.getElementById('previewVideo').src = url;
+                document.getElementById('videoPreview').style.display = 'block';
+            }
+        }
+        
+        function previewPoster(input) {
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    document.getElementById('previewPoster').src = e.target.result;
+                    document.getElementById('posterPreview').style.display = 'block';
+                }
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+    </script>
+</body>
+</html>

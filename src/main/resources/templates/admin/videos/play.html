@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org" th:replace="~{admin/layout :: layout(~{::title}, ~{::content})}">
+<head>
+    <title th:text="${video.title} + ' - Video Player'">Video Player</title>
+</head>
+<body>
+    <div th:fragment="content">
+        <!-- Page Header -->
+        <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center mb-4">
+            <h1 class="h2">
+                <i class="bi bi-play-circle me-2"></i>
+                <span th:text="${video.title}">Video Title</span>
+            </h1>
+            <div class="btn-toolbar mb-2 mb-md-0">
+                <a th:href="@{/admin/videos/}" class="btn btn-admin btn-outline-secondary">
+                    <i class="bi bi-arrow-left me-2"></i>Back to Videos
+                </a>
+                <a th:href="@{/admin/videos/edit/{id}(id=${video.id})}" class="btn btn-admin btn-admin-primary ms-2">
+                    <i class="bi bi-pencil me-2"></i>Edit Video
+                </a>
+            </div>
+        </div>
+
+        <div class="row">
+            <!-- Video Player -->
+            <div class="col-lg-8">
+                <div class="admin-card">
+                    <div class="admin-card-body">
+                        <div class="video-container">
+                            <video th:if="${video.videoFile != null and !video.videoFile.isEmpty()}" 
+                                   th:src="@{'/video-files/' + ${video.videoFile}}" 
+                                   controls 
+                                   class="w-100" 
+                                   style="max-height: 500px; background-color: #000;">
+                                Your browser does not support the video tag.
+                            </video>
+                            
+                            <!-- Fallback for external video code -->
+                            <div th:if="${video.videoFile == null or video.videoFile.isEmpty()}" 
+                                 th:unless="${video.videoCode == null or video.videoCode.isEmpty()}"
+                                 class="embed-responsive embed-responsive-16by9">
+                                <iframe th:src="'https://www.youtube.com/embed/' + ${video.videoCode}" 
+                                        frameborder="0" 
+                                        allowfullscreen 
+                                        class="embed-responsive-item w-100" 
+                                        style="height: 500px;">
+                                </iframe>
+                            </div>
+                            
+                            <!-- No video available -->
+                            <div th:if="${(video.videoFile == null or video.videoFile.isEmpty()) and (video.videoCode == null or video.videoCode.isEmpty())}" 
+                                 class="text-center py-5 bg-light">
+                                <i class="bi bi-play-circle display-1 text-muted"></i>
+                                <h4 class="text-muted mt-3">No video available</h4>
+                                <p class="text-muted">Please upload a video file or provide a video code.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Video Information -->
+            <div class="col-lg-4">
+                <div class="admin-card mb-4">
+                    <div class="admin-card-header">
+                        <h5 class="mb-0">
+                            <i class="bi bi-info-circle me-2"></i>Video Information
+                        </h5>
+                    </div>
+                    <div class="admin-card-body">
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">Title:</label>
+                            <p class="mb-0" th:text="${video.title}">Video Title</p>
+                        </div>
+                        
+                        <div class="mb-3" th:if="${video.description != null and !video.description.isEmpty()}">
+                            <label class="form-label fw-semibold">Description:</label>
+                            <p class="mb-0" th:text="${video.description}">Video Description</p>
+                        </div>
+                        
+                        <div class="mb-3" th:if="${video.category != null}">
+                            <label class="form-label fw-semibold">Category:</label>
+                            <p class="mb-0">
+                                <span class="badge bg-secondary" th:text="${video.category.categoryName}">Category</span>
+                            </p>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">Views:</label>
+                            <p class="mb-0">
+                                <span class="badge bg-info" th:text="${video.views}">0</span>
+                            </p>
+                        </div>
+                        
+                        <div class="mb-3" th:if="${video.duration > 0}">
+                            <label class="form-label fw-semibold">Duration:</label>
+                            <p class="mb-0" th:text="${video.duration} + ' seconds'">0 seconds</p>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">Status:</label>
+                            <p class="mb-0">
+                                <span th:if="${video.active}" class="badge bg-success">Active</span>
+                                <span th:unless="${video.active}" class="badge bg-danger">Inactive</span>
+                            </p>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">Created Date:</label>
+                            <p class="mb-0" th:text="${#dates.format(video.createdDate, 'dd/MM/yyyy HH:mm')}">01/01/2024 00:00</p>
+                        </div>
+                        
+                        <div class="mb-3" th:if="${video.user != null}">
+                            <label class="form-label fw-semibold">Uploaded by:</label>
+                            <p class="mb-0" th:text="${video.user.fullName}">User Name</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Poster Image -->
+                <div class="admin-card" th:if="${video.poster != null and !video.poster.isEmpty()}">
+                    <div class="admin-card-header">
+                        <h5 class="mb-0">
+                            <i class="bi bi-image me-2"></i>Poster
+                        </h5>
+                    </div>
+                    <div class="admin-card-body text-center">
+                        <img th:src="${video.poster.startsWith('images/') ? '/' + video.poster : '/images/' + video.poster}" 
+                             class="img-fluid rounded" 
+                             style="max-height: 200px; object-fit: cover; opacity:0; transition: opacity 0.3s;"
+                             onload="this.style.opacity=1;"
+                             onerror="this.style.display='none';">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

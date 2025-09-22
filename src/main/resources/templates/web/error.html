@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org" th:replace="~{layouts/layout :: layout(~{::title}, ~{::content})}">
+<head>
+    <title>Lỗi - Video Platform</title>
+</head>
+<body>
+    <div th:fragment="content">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-lg-6 col-md-8 col-sm-12">
+                    <div class="card shadow-sm">
+                        <div class="card-body text-center py-5">
+                            <!-- Error Icon -->
+                            <div class="mb-4">
+                                <i class="bi bi-exclamation-triangle text-danger" style="font-size: 5rem;"></i>
+                            </div>
+                            
+                            <!-- Error Code -->
+                            <h1 class="display-1 text-danger mb-3" th:text="${errorCode}">403</h1>
+                            
+                            <!-- Error Title -->
+                            <h2 class="mb-3" th:text="${errorTitle}">Không có quyền truy cập</h2>
+                            
+                            <!-- Error Message -->
+                            <p class="text-muted mb-4" th:text="${errorMessage}">
+                                Bạn không có quyền truy cập vào trang này. Vui lòng liên hệ quản trị viên.
+                            </p>
+                            
+                            <!-- Action Buttons -->
+                            <div class="d-flex gap-3 justify-content-center flex-wrap">
+                                <a th:href="${suggestedUrl}" class="btn btn-primary">
+                                    <i class="bi bi-house me-2"></i>
+                                    <span th:text="${suggestedAction}">Quay về trang chủ</span>
+                                </a>
+                                
+                                <button onclick="history.back()" class="btn btn-outline-secondary">
+                                    <i class="bi bi-arrow-left me-2"></i>Quay lại
+                                </button>
+                                
+                                <a th:if="${errorCode == '403'}" href="/profile" class="btn btn-outline-info">
+                                    <i class="bi bi-person me-2"></i>Hồ sơ cá nhân
+                                </a>
+                            </div>
+                            
+                            <!-- Additional Info for 403 -->
+                            <div th:if="${errorCode == '403'}" class="mt-4 p-3 bg-light rounded">
+                                <h6 class="text-muted mb-2">Gợi ý:</h6>
+                                <ul class="list-unstyled text-muted small mb-0">
+                                    <li>• Kiểm tra lại quyền truy cập của tài khoản</li>
+                                    <li>• Liên hệ quản trị viên để được cấp quyền</li>
+                                    <li>• Sử dụng menu điều hướng để truy cập các trang phù hợp</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

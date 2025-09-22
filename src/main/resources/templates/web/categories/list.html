@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org" th:replace="~{layouts/layout :: layout(~{::title}, ~{::content})}">
+<head>
+    <title>Danh mục - Video Platform</title>
+</head>
+<body>
+    <div th:fragment="content">
+        <div class="container">
+            <div class="row">
+                <div class="col-12">
+                    <h2 class="mb-4">
+                        <i class="bi bi-collection me-2"></i>
+                        Danh mục video
+                    </h2>
+                    
+                    <!-- Thông báo phân quyền -->
+                    <div class="alert alert-info" th:if="${session.user != null and session.user.role.roleName == 'USER'}">
+                        <i class="bi bi-info-circle me-2"></i>
+                        Bạn đang xem với quyền <strong>User</strong>. Chỉ có thể xem danh mục, không thể thêm/sửa/xóa.
+                    </div>
+                    
+                    <div class="alert alert-warning" th:if="${session.user != null and session.user.role.roleName == 'ADMIN'}">
+                        <i class="bi bi-shield-check me-2"></i>
+                        Bạn đang xem với quyền <strong>Admin</strong>. 
+                        <a th:href="@{/admin/categories}" class="btn btn-sm btn-primary ms-2">
+                            <i class="bi bi-gear me-1"></i>Quản lý danh mục
+                        </a>
+                    </div>
+                    
+                    <!-- Danh sách danh mục -->
+                    <div class="row" th:if="${categories != null and !categories.empty}">
+                        <div class="col-md-6 col-lg-4 mb-3" th:each="category : ${categories}">
+                            <div class="card h-100">
+                                <div class="card-body">
+                                    <h5 class="card-title" th:text="${category.categoryName}">Tên danh mục</h5>
+                                    <p class="card-text text-muted" th:text="${category.description}">Mô tả danh mục</p>
+                                </div>
+                                <div class="card-footer">
+                                    <a th:href="@{/categories/{id}(id=${category.id})}" class="btn btn-outline-primary btn-sm">
+                                        <i class="bi bi-eye me-1"></i>Xem chi tiết
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Thông báo không có danh mục -->
+                    <div class="text-center py-5" th:if="${categories == null or categories.empty}">
+                        <i class="bi bi-collection display-1 text-muted mb-3"></i>
+                        <h4 class="text-muted">Chưa có danh mục nào</h4>
+                        <p class="text-muted">Hãy quay lại sau để xem các danh mục mới</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

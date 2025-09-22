@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org" th:replace="~{admin/layout :: layout(~{::title}, ~{::content})}">
+<head>
+    <title>Add/Edit Category - Admin</title>
+</head>
+<body>
+    <div th:fragment="content">
+        <!-- Flash Messages -->
+        <div th:if="${success}" class="alert alert-success admin-alert alert-dismissible fade show" role="alert">
+            <i class="bi bi-check-circle me-2"></i>
+            <span th:text="${success}"></span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+        
+        <div th:if="${error}" class="alert alert-danger admin-alert alert-dismissible fade show" role="alert">
+            <i class="bi bi-exclamation-triangle me-2"></i>
+            <span th:text="${error}"></span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+
+        <!-- Page Header -->
+        <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+            <h1 class="h2">
+                <i class="bi bi-tag me-2"></i>
+                <span th:text="${category.id != null} ? 'Edit Category' : 'Add Category'">Add Category</span>
+            </h1>
+            <div class="btn-toolbar mb-2 mb-md-0">
+                <a th:href="@{/admin/categories/}" class="btn btn-admin btn-outline-secondary">
+                    <i class="bi bi-arrow-left me-2"></i>Back to Categories
+                </a>
+            </div>
+        </div>
+
+        <!-- Category Form -->
+        <div class="row">
+            <div class="col-lg-8">
+                <div class="card admin-card">
+                    <div class="card-header">
+                        <h5 class="mb-0">
+                            <i class="bi bi-form me-2"></i>Category Information
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <form th:action="@{/admin/categories/saveOrUpdate}" th:object="${category}" method="post" enctype="multipart/form-data" class="needs-validation" novalidate>
+                            <!-- Hidden field for category ID -->
+                            <input type="hidden" th:field="*{id}">
+                            
+                            <div class="row">
+                                <div class="col-md-12 mb-3">
+                                    <label for="categoryName" class="form-label">Category Name <span class="text-danger">*</span></label>
+                                    <input type="text" class="form-control" id="categoryName" th:field="*{categoryName}" 
+                                           placeholder="Enter category name" required>
+                                    <div class="invalid-feedback">
+                                        Please provide a valid category name.
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="row">
+                                <div class="col-md-12 mb-3">
+                                    <label for="description" class="form-label">Description</label>
+                                    <textarea class="form-control" id="description" th:field="*{description}" 
+                                              rows="4" placeholder="Enter category description"></textarea>
+                                    <div class="form-text">Optional: Provide a brief description of this category.</div>
+                                </div>
+                            </div>
+                            
+                            <div class="row">
+                                <div class="col-md-12 mb-3">
+                                    <label for="avatarFile" class="form-label">Category Avatar</label>
+                                    <input type="file" class="form-control" id="avatarFile" name="avatarFile" 
+                                           accept="image/*" onchange="previewImage(this)">
+                                    <div class="form-text">Upload an avatar image for this category (JPG, PNG, GIF).</div>
+                                    
+                                    <!-- Preview current avatar -->
+                                    <div th:if="${category.images != null and !category.images.isEmpty()}" class="mt-2">
+                                        <label class="form-label">Current Avatar:</label>
+                                        <div class="d-flex align-items-center">
+                                            <img th:src="${#strings.startsWith(category.images, '/') ? category.images : (category.images.startsWith('avatars/') ? '/' + category.images : (category.images.startsWith('images/') ? '/' + category.images : '/avatars/' + category.images))}" 
+                                                 class="img-thumbnail me-3" style="width: 80px; height: 80px; object-fit: cover; opacity:0; transition: opacity 0.3s;"
+                                                 onload="this.style.opacity=1;"
+                                                 onerror="this.style.display='none';">
+                                            <div>
+                                                <small class="text-muted">Current avatar will be replaced if you upload a new one.</small>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Preview new avatar -->
+                                    <div id="avatarPreview" class="mt-2" style="display: none;">
+                                        <label class="form-label">New Avatar Preview:</label>
+                                        <div class="d-flex align-items-center">
+                                            <img id="previewImg" class="img-thumbnail me-3" style="width: 80px; height: 80px; object-fit: cover;">
+                                            <div>
+                                                <small class="text-success">This will be the new avatar.</small>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="row">
+                                <div class="col-12">
+                                    <hr>
+                                    <div class="d-flex justify-content-end gap-2">
+                                        <a th:href="@{/admin/categories/}" class="btn btn-admin btn-outline-secondary">
+                                            <i class="bi bi-x-circle me-2"></i>Cancel
+                                        </a>
+                                        <button type="submit" class="btn btn-admin btn-admin-primary">
+                                            <i class="bi bi-check-circle me-2"></i>
+                                            <span th:text="${category.id != null} ? 'Update Category' : 'Create Category'">Create Category</span>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-lg-4">
+                <div class="card admin-card">
+                    <div class="card-header">
+                        <h5 class="mb-0">
+                            <i class="bi bi-info-circle me-2"></i>Information
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="mb-3">
+                            <h6>Category Guidelines</h6>
+                            <ul class="list-unstyled text-muted small">
+                                <li><i class="bi bi-check text-success me-2"></i>Use clear, descriptive names</li>
+                                <li><i class="bi bi-check text-success me-2"></i>Avoid special characters</li>
+                                <li><i class="bi bi-check text-success me-2"></i>Keep names concise</li>
+                                <li><i class="bi bi-check text-success me-2"></i>Use consistent naming</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <h6>Tips</h6>
+                            <ul class="list-unstyled text-muted small">
+                                <li><i class="bi bi-lightbulb text-warning me-2"></i>Categories help organize content</li>
+                                <li><i class="bi bi-lightbulb text-warning me-2"></i>Users can filter by category</li>
+                                <li><i class="bi bi-lightbulb text-warning me-2"></i>Consider your content structure</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="card admin-card">
+                    <div class="card-header">
+                        <h5 class="mb-0">
+                            <i class="bi bi-bar-chart me-2"></i>Statistics
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row text-center">
+                            <div class="col-6">
+                                <div class="h4 text-primary" th:text="${category.id != null ? '0' : '0'}">0</div>
+                                <small class="text-muted">Videos</small>
+                            </div>
+                            <div class="col-6">
+                                <div class="h4 text-success" th:text="${category.id != null ? '0' : '0'}">0</div>
+                                <small class="text-muted">Views</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Form validation
+        (function() {
+            'use strict';
+            window.addEventListener('load', function() {
+                var forms = document.getElementsByClassName('needs-validation');
+                var validation = Array.prototype.filter.call(forms, function(form) {
+                    form.addEventListener('submit', function(event) {
+                        if (form.checkValidity() === false) {
+                            event.preventDefault();
+                            event.stopPropagation();
+                        }
+                        form.classList.add('was-validated');
+                    }, false);
+                });
+            }, false);
+        })();
+        
+        function previewImage(input) {
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    document.getElementById('previewImg').src = e.target.result;
+                    document.getElementById('avatarPreview').style.display = 'block';
+                }
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+    </script>
+</body>
+</html>
